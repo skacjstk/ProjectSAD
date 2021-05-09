@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasePawn : MonoBehaviour
+//카메라 좌표
+// 블랙: 3.5, 8 ,8  yRotation 180
+// 화이트: 3.5, 8, -1, yRotation 0
+public class Player : ColliderHandler
 {
     // Start is called before the first frame update
     void Start()
     {
-        TestDebug();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetMouseButtonDown(0))
+        {
+            SelectPiece();
+        }
     }
 
-    private void TestDebug()
-    {
-        Debug.Log("Hello world");
-    }
+
+
 }
