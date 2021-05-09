@@ -21,15 +21,14 @@ public class Board : MonoBehaviour
     private const int boardSize = 8;
     [SerializeField] private ChessGameController theChessGameController;
     private Piece selectedPiece;
-    
-    
+
     public class PieceData
     {
        public PieceType pieceType;
        public TeamColor team;
     }
 
-    private PieceData[,] BoardInPiece = new PieceData[8,8]; 
+    public PieceData[,] BoardInPiece = new PieceData[8,8]; 
  
 
     //위치 정보만 담고 있는 PieceType Board 정보 
@@ -102,13 +101,28 @@ public class Board : MonoBehaviour
         BoardInPiece[7, 4].team = TeamColor.Black;
     }
 
+    //Vector2Int 좌표를 기물에 적용할 Vector3Int 좌표로 바꾸는 코드
     public Vector3Int CalculateCoordsToPosition(Vector2Int coords)
     {
         return new Vector3Int(coords.x, 0, coords.y);
     }
-
+    //Vector3 또는 Vector3Int 좌표를 Vector2Int 좌표로 바꾸는 코드
+    public Vector2Int CalculatePositionToCoords(Vector3 coords)
+    {
+        return new Vector2Int((int)coords.x, (int)coords.z);
+    }
     public int GetBoardSize()
     {
         return boardSize;
     }
+
+    public void SetSelectedPiece(Piece tempPiece)
+    {
+        selectedPiece = tempPiece;
+    }
+    public Piece GetSelectedPiece()
+    {
+        return selectedPiece;
+    }
+
 }

@@ -14,11 +14,6 @@ public class SquareGenerator : MonoBehaviour
         theBoard = FindObjectOfType<Board>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void GenerateSquare(Piece tempPiece)
     {
@@ -154,7 +149,8 @@ public class SquareGenerator : MonoBehaviour
         }
     }//end function 
 
-    private void SquareClear()
+    //그래픽적인 사각형 모두 삭제
+    public void SquareClear()
     {
         if (SquareList.Count >= 1)
         {

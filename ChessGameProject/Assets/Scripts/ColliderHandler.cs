@@ -12,12 +12,13 @@ public class ColliderHandler : MonoBehaviour
     public LayerMask layerMaskSquare;
     public Camera playerCamera;
     protected SquareGenerator theSquareGenerator;
+    private ChessGameController theChessGameController;
     Piece tempPiece;
-
 
     void Awake()
     {
         theSquareGenerator = FindObjectOfType<SquareGenerator>();
+        theChessGameController = FindObjectOfType<ChessGameController>();
     }
     
 
@@ -30,18 +31,22 @@ public class ColliderHandler : MonoBehaviour
             {
                 Debug.Log("Piece 초기화 진입");
                 tempPiece = hit.transform.GetComponent<Piece>();
-                tempPiece.SelectedPiece();
-                //SelectedPiece 필요 없는것 같다
-                //내가 직접 여기서 타입을 가져와서, Board 에 SelectedPiece 변수에 직접 넣는게 편할 것 같다. 
+                theChessGameController.SetSelectedPiece(tempPiece);
                 PieceType p1 = tempPiece.GetPieceType();
                 theSquareGenerator.GenerateSquare(tempPiece);
             }
         }
         else if (SquareHit.transform.gameObject.layer == LayerMask.NameToLayer("Square"))
-        {          
+        {
+
             //오류 이유: hit가 사라져서 
-             Debug.Log("사각형 위치: " + SquareHit.transform.position);
-            // = SquareHit.transform.position;
+            Debug.Log("사각형 위치: " + SquareHit.transform.position);
+            //보드에 위치 정보 갱신
+            theChessGameController.PiecePosMove(tempPiece.transform.position, SquareHit.transform.position);
+            //그래픽적인 위치 이동 
+            tempPiece.transform.position = SquareHit.transform.position;
+
+            theSquareGenerator.SquareClear();  
         }
 
         
