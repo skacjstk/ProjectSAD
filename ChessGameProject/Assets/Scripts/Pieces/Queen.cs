@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rook : Piece
+public class Queen : Piece
 {
-    PieceType pieceType = PieceType.Rook;
+    PieceType pieceType = PieceType.Queen;
     //    List<Vector2Int> killDirections = new List<Vector2Int>();  //WhiteCamera 기준 z 음수가 앞, x 음수가 오른쪽 ( 이것은 전용함수로 교정할 예정 ) 양파상도 이것으로 판단함
 
     // Rook 은 직선방향 
@@ -13,6 +13,11 @@ public class Rook : Piece
         new Vector2Int(8, 0),
         new Vector2Int(0, -8),
         new Vector2Int(-8, 0),
+        //대각선 4방 
+        new Vector2Int(8, 8),
+        new Vector2Int(8, -8),
+        new Vector2Int(-8, 8),
+        new Vector2Int(-8, -8),
     };
 
 
