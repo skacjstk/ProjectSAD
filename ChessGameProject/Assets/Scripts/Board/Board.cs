@@ -22,85 +22,37 @@ public class Board : MonoBehaviour
     [SerializeField] private ChessGameController theChessGameController;
     private Piece selectedPiece;
 
-    public class PieceData
-    {
-       public PieceType pieceType;
-       public TeamColor team;
-    }
 
-    public PieceData[,] BoardInPiece = new PieceData[8,8]; 
- 
 
-    //위치 정보만 담고 있는 PieceType Board 정보 
+    //위치 정보만 담고 있는 grid 정보 
+    public Piece[,] grid = new Piece[boardSize, boardSize];
+
 
 
     private void Start()
     {
-        //InisializeBoardinPiece()
+        //ChessGameController.StartNewGame() 이후에 동작 할까...?
     }
 
-    //보드에 기물 위치 정보 초기화 
-    private void InitializeBoardInPiece()
+    //보드에 기물 위치 정보 초기화    
+    //인스턴스 접근을 잘못해서 다시 짜야 함.
+    //클래스를 만들 때는 생성자를 이용해야지 직접 접근으로 생성할 수 없음.
+    public void InitializeGrid(Vector3 coords, GameObject tempObject)
     {
+        //tempObject 로 coords 새로 불러오면, 여기서 new 해야 된다. 자원낭비임 
+        grid[(int)coords.z, (int)coords.x] = tempObject.GetComponent<Piece>();
         //위치 정보 초기화   
         //n+1 번째 줄 좌 -> 우 순 n+1 번째 칸 
-        for (int i = 0; i < boardSize; ++i)
-        {
-            //흰폰 초기화 
-            BoardInPiece[1, i].pieceType = PieceType.Pawn;
-            BoardInPiece[1, i].team = TeamColor.White;
-            //검폰 초기화
-            BoardInPiece[6, i].pieceType = PieceType.Pawn;
-            BoardInPiece[6, i].team = TeamColor.Black;
-        } // 폰 위치 초기화 
-        
-        //흰룩 초기화
-        BoardInPiece[0, 0].pieceType = PieceType.Rook;
-        BoardInPiece[0, 0].team = TeamColor.White;
-        BoardInPiece[0, 7].pieceType = PieceType.Rook;
-        BoardInPiece[0, 7].team = TeamColor.White;
-
-        //검룩 초기화
-        BoardInPiece[7, 0].pieceType = PieceType.Rook;
-        BoardInPiece[7, 0].team = TeamColor.Black;
-        BoardInPiece[7, 7].pieceType = PieceType.Rook;
-        BoardInPiece[7, 7].team = TeamColor.Black;
-
-        //흰나
-        BoardInPiece[0, 1].pieceType = PieceType.Knight;
-        BoardInPiece[0, 1].team = TeamColor.White;
-        BoardInPiece[0, 6].pieceType = PieceType.Knight;
-        BoardInPiece[0, 6].team = TeamColor.White;
-        //검나
-        BoardInPiece[7, 1].pieceType = PieceType.Knight;
-        BoardInPiece[7, 1].team = TeamColor.Black;
-        BoardInPiece[7, 6].pieceType = PieceType.Knight;
-        BoardInPiece[7, 6].team = TeamColor.Black;
-        //흰숍
-        BoardInPiece[0, 2].pieceType = PieceType.Bishop;
-        BoardInPiece[0, 2].team = TeamColor.White;
-        BoardInPiece[0, 5].pieceType = PieceType.Bishop;
-        BoardInPiece[0, 5].team = TeamColor.White;
-        //검숍
-        BoardInPiece[7, 2].pieceType = PieceType.Bishop;
-        BoardInPiece[7, 2].team = TeamColor.Black;
-        BoardInPiece[7, 5].pieceType = PieceType.Bishop;
-        BoardInPiece[7, 5].team = TeamColor.Black;
-        //흰퀸
-        BoardInPiece[0, 3].pieceType = PieceType.Queen;
-        BoardInPiece[0, 3].team = TeamColor.White;
-        //검퀸
-        BoardInPiece[7, 3].pieceType = PieceType.Queen;
-        BoardInPiece[7, 3].team = TeamColor.Black;
-
-        //흰킹
-        BoardInPiece[0, 4].pieceType = PieceType.King;
-        BoardInPiece[0, 4].team = TeamColor.White;
-        //검킹
-        BoardInPiece[7, 4].pieceType = PieceType.King;
-        BoardInPiece[7, 4].team = TeamColor.Black;
+        Debug.Log("Piece:"+grid[(int)coords.z, (int)coords.x].GetPieceType()+"\tcoords: "+coords);    
     }
 
+    public bool CheckGrid(Vector3Int coords)
+    {
+        //임시
+        return Random.value > 0.5f; //Random.value 는 0.0~ 1.0 을 랜덤으로 반환
+    }
+
+    //{get; set;}
     //Vector2Int 좌표를 기물에 적용할 Vector3Int 좌표로 바꾸는 코드
     public Vector3Int CalculateCoordsToPosition(Vector2Int coords)
     {
