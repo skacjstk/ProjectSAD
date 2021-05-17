@@ -36,12 +36,11 @@ public class ChessGameController : MonoBehaviour
     {
         theBoard.InitializeGrid(coords, tempObject);
     }
-
-
         //Board 의 함수를 반환하는 체스 컨트롤러의 함수 
-        public void SetSelectedPiece(Piece tempPiece)
+    public void SetSelectedPiece(Piece tempPiece)
     {
-        theBoard.SetSelectedPiece(tempPiece); 
+        theBoard.SetSelectedPiece(tempPiece);
+        Debug.Log("현재 선택한 Piece: " + tempPiece.GetPieceType());
     }
     public Piece GetSelectedPiece()
     {
@@ -63,8 +62,9 @@ public class ChessGameController : MonoBehaviour
             //그래픽적인 파괴
             Destroy(theBoard.grid[tempAfterPos.y, tempAfterPos.x].gameObject);
             //시스템적인 파괴
-            theBoard.grid[tempAfterPos.y, tempAfterPos.x] = null;
-            theBoard.grid[tempAfterPos.y, tempAfterPos.x] = theBoard.grid[tempBeforePos.y, tempBeforePos.x];
+            theBoard.grid[tempAfterPos.y, tempAfterPos.x] = null;   //이후 위치에 네가 없다.
+            theBoard.grid[tempAfterPos.y, tempAfterPos.x] = theBoard.grid[tempBeforePos.y, tempBeforePos.x];        //그곳에 내가 있다.
+            theBoard.grid[tempBeforePos.y, tempBeforePos.x] = null; //이전 위치에 내가 있었다.
 
             // 참고로, PiecePosMove 의 경우, 유효하다고 판단한 사각형을 클릭했을 때, 호출되는 함수 이기 때문에, 아군 과 적군의 검사는 SquareGenerator 의 몫
         }
