@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PiecesGenerator))]
 public class ChessGameController : MonoBehaviour
 {
 
@@ -18,7 +17,6 @@ public class ChessGameController : MonoBehaviour
     {
 
         //의존관계 설정 후 게임 초기화 ( 씬이 불러와질 때 )
-
         StartNewGame();
 
     }
@@ -74,7 +72,6 @@ public class ChessGameController : MonoBehaviour
             theBoard.grid[tempBeforePos.y, tempBeforePos.x] = null;
         }
     } //end function
-
     public void ChangePawnMove()
     {
         if (GetSelectedPiece().GetPieceType() == PieceType.Pawn)

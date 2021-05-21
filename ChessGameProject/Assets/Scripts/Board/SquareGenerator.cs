@@ -26,15 +26,12 @@ public class SquareGenerator : MonoBehaviour
         //사각형 만드는 곳에 좌표 검사를 하자. 여기선 그냥 명령만 
         SquareClear();
 
-
-        
         if (pType.Equals(PieceType.Pawn))
         {
             tempDirections = tempPiece.GetDirections();
             Debug.Log("tempVector 길이" + tempDirections.Count + "위치: "+tempPiece.transform.position);
 
             //Piece 의 현재 좌표에서 directions[0] 의 위치에 아무것도 없다면 이동 가능함
-
             //다른 애들은 팔방 인데 얘만 직선이라 앞뒤 따라 좌표가 다르다. 
             if (tempPiece.team.Equals(TeamColor.Black))
             {
@@ -110,8 +107,7 @@ public class SquareGenerator : MonoBehaviour
         calDirection = new Vector3Int(Mathf.RoundToInt(tempPiece.transform.position.x), 0, Mathf.RoundToInt(tempPiece.transform.position.z));
         //calDIrection 에 사각형 위치를 더하고
          calDirection += theBoard.CalculateCoordsToPosition(tempDirection);
-
-        //객체를 만들기 (이걸 어디에 담아서 파괴시켜야 한다)
+                
         flag = CheckValidSquare(calDirection, tempPiece);
         switch (flag)
         {
@@ -153,7 +149,6 @@ public class SquareGenerator : MonoBehaviour
                     calDirection += new Vector3Int(0, 0, -1);
                 //endif
             }
-
             //직선 (옆)
             else if (tempDirection.y == 0)
             {
@@ -163,7 +158,6 @@ public class SquareGenerator : MonoBehaviour
                     calDirection += new Vector3Int(-1, 0, 0);
                 //endif
             }
-
             //대각선
             else
             {
@@ -176,7 +170,6 @@ public class SquareGenerator : MonoBehaviour
                 else if (tempDirection.x > 0 && tempDirection.y > 0)                
                     calDirection += new Vector3Int(-1, 0, -1);                
             }//end if 
-
             //유효성 검사 1. 보드 안에서 움직이는 건가? 
             flag = CheckValidSquare(calDirection, tempPiece);
             switch (flag)
@@ -192,7 +185,7 @@ public class SquareGenerator : MonoBehaviour
                     //유효하지 않음. 대상 위치에 아군 기물이 있음
                     break;
                 case 3:
-                    //유효함. 대상 위치에 적 기물이 있음. LineCreate 일 경우 더 이상의 반복문을 수행하지 않게 설정 요구. 
+                    //유효하되, 더 나아갈 수 없음. 대상 위치에 적 기물이 있음. LineCreate 일 경우 더 이상의 반복문을 수행하지 않게 설정 요구. 
                     SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
                     break;
                 case 4:
@@ -202,7 +195,7 @@ public class SquareGenerator : MonoBehaviour
                     Debug.Log("아무 값이 없음");
                     break;
             }
-            if (flag != 1)  //유효하지 않을 경우, break  
+            if (flag != 1)  //1 제외 break : case 3 은 적 기물에 막혀서 안돼
                 break;
         }//endfor
     }//end function 
@@ -212,16 +205,15 @@ public class SquareGenerator : MonoBehaviour
         if (calDirection.x < 0 || calDirection.x > 7 || calDirection.z < 0 || calDirection.z > 7)
             return 0;
         /*
-  . 이동하려는 해당 위치를 기준으로
- 0. 유효하지 않다. 
- 1. 아무것도 없다.
- 2. 아군 기물이 있다.
- 3. 적군 기물이 있다.
- 4. 번외: 적 킹이 있다. 
-
-        2-1. Pawn 의 경우 배열이 3개이며, 각 배열엔 기본이동, 좌우 킬좌표  도합 3개의 directions 가 있다. 
-  */
-
+         *  이동하려는 해당 위치를 기준으로
+         *  0. 유효하지 않다. 
+         *  1. 아무것도 없다.
+         *  2. 아군 기물이 있다.
+         *  3. 적군 기물이 있다.
+         *  4. 번외: 적 킹이 있다. 
+         *
+         *  2-1. Pawn 의 경우 배열이 3개이며, 각 배열엔 기본이동, 좌우 킬좌표  도합 3개의 directions 가 있다. 
+         */
         //폰 전용 검사, 양파상(미구현)
         else if (tempPiece.GetPieceType() == PieceType.Pawn)
         {
@@ -248,18 +240,14 @@ public class SquareGenerator : MonoBehaviour
         else
         {
             if (theBoard.grid[calDirection.z, calDirection.x] == null)
-            {
-                return 1;
-            }
-            else if (theBoard.grid[calDirection.z, calDirection.x].team == tempPiece.team)
+                return 1;            
+            else if (TeamCheck(calDirection,tempPiece))
                 return 2;
-            else if(theBoard.grid[calDirection.z, calDirection.x].team != tempPiece.team)
-            {
+            else if(!TeamCheck(calDirection, tempPiece))  //어떤 다른 경우가 있을까봐      
                 return 3;
-            }
+            
         }
-
-        return 4;
+        return 4;   //현재는 킹일 때, 이지만 없음 
     }//endfunction
 
     private bool TeamCheck(Vector3Int calDirection, Piece tempPiece)
