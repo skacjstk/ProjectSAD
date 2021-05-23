@@ -20,6 +20,7 @@ public class Board : MonoBehaviour
      */
     private const int boardSize = 8;
     [SerializeField] private ChessGameController theChessGameController;
+    private SquareGenerator theSquareGenerator;
     private Piece selectedPiece;
 
 
@@ -27,7 +28,10 @@ public class Board : MonoBehaviour
     //위치 정보만 담고 있는 grid 정보 
     public Piece[,] grid = new Piece[boardSize, boardSize];
 
-
+    private void Awake()
+    {
+        theSquareGenerator = FindObjectOfType<SquareGenerator>();
+    }
 
     private void Start()
     {
@@ -53,16 +57,7 @@ public class Board : MonoBehaviour
     }
 
     //{get; set;}
-    //Vector2Int 좌표를 기물에 적용할 Vector3Int 좌표로 바꾸는 코드
-    public Vector3Int CalculateCoordsToPosition(Vector2Int coords)
-    {
-        return new Vector3Int(coords.x, 0, coords.y);
-    }
-    //Vector3 또는 Vector3Int 좌표를 Vector2Int 좌표로 바꾸는 코드
-    public Vector2Int CalculatePositionToCoords(Vector3 coords)
-    {
-        return new Vector2Int((int)coords.x, (int)coords.z);
-    }
+
     /// <summary>
     /// enpassent 가능 여부를 따진다. 이를 위해선 ChessGameController 에 있는 currentGameTurn 변수가 필요하다. 
     /// </summary>
@@ -96,8 +91,76 @@ public class Board : MonoBehaviour
             }
         }
         return false;
-    }
+    }/// <summary>
+    /// 캐슬링이 가능한지 아닌지 판단하고, 스스로 사각형을 생성한다. 
+    /// </summary>
+    /// <param name="tempPiece">King 일 경우 전달되는 King 속성의 Piece 인자</param>
+    public void CheckCastling(Piece tempPiece)
+    {
+        //움직인 적이 없을 경우 false 의 NOT 인 true 반환 
+        if (!tempPiece.hasMoved)
+        {
+            bool flag = true; 
+            Vector2Int tempDirection;  //자기 King 의 위치 
+            if(tempPiece.team == TeamColor.White)            
+                tempDirection = new Vector2Int(4, 0);    //흰 킹 위치
+            else 
+                tempDirection = new Vector2Int(4, 7);    //검은 킹 위치
 
+    //        Debug.LogWarning("킹 위치:" + tempDirection);
+            //QueenSide 
+            //3,2,1 가 null 이며, 0에 hasMoved 가 false 인 아군 Rook 이 있어야 한다. 
+
+            for(int i = (int)tempDirection.x - 1; i > 0; --i)
+            {
+      //          Debug.LogWarning("좌표검사!!!!!:"+tempDirection.y+i);
+                if (grid[tempDirection.y, i] != null)
+                    flag = false;
+            }
+            if (flag) //사이드 칸이 모두 null 이면
+            {
+                if (CheckRook(tempDirection, tempPiece, 0)){
+                    theSquareGenerator.SquareCreate(CalculateCoordsToPosition(new Vector2Int(2, tempDirection.y)));
+                }
+            }
+            //KingSide
+            //5,6 이 null 이며, hasMovedc 가 false 인 아군 Rook 이 있어야 한다.
+            flag = true;
+            for (int i = (int)tempDirection.x + 1; i < 7; ++i)
+            {
+     //           Debug.LogWarning("좌표검사!!!!!:" + tempDirection.y + i);
+                if (grid[tempDirection.y, i] != null)
+                    flag = false;
+            }
+            if (flag) //킹사이드 칸이 모두 null 이면
+            {
+                if (CheckRook(tempDirection, tempPiece, 7)){
+                    theSquareGenerator.SquareCreate(CalculateCoordsToPosition(new Vector2Int(6, tempDirection.y)));
+                }
+            }
+        }//endif
+    }
+    /// <summary>
+    /// 아군 록이며 hadMoved 가 false 인지 bool 타입으로 확인하는 함수 
+    /// </summary>
+    /// <param name="tempDirection">그 rook 이 있(을 것으로 예상되는) 위치 </param>
+    /// <param name="cordX" 0이냐  7이냐, 사이드 구분을 못하니까 이걸로 하드코딩  </param>
+    /// <returns>true 일 경우, 캐슬링 가능</returns>
+    private bool CheckRook(Vector2Int tempDirection, Piece tempPiece, int cordX)
+    {           //대상이 안움직였으며, team 색이 같으며, Rook 타입일 경우
+        Debug.LogWarning("Rook 검사:z좌표: " + tempDirection.y + " x좌표: " + cordX);
+        if(grid[tempDirection.y, cordX] != null)
+        { 
+            if (!grid[tempDirection.y, cordX].hasMoved && tempPiece.team.Equals(grid[tempDirection.y, cordX].team) && grid[tempDirection.y, cordX].GetPieceType().Equals(PieceType.Rook))
+            {
+                return true;
+            }//endif
+            else
+                return false;
+        }
+        else
+            return false;
+    }
     public bool TeamCheck(Vector3Int calDirection, Piece tempPiece)
     {
         if (grid[calDirection.z, calDirection.x].team == tempPiece.team)
@@ -118,5 +181,14 @@ public class Board : MonoBehaviour
     {
         return selectedPiece;
     }
-
+    //Vector2Int 좌표를 기물에 적용할 Vector3Int 좌표로 바꾸는 코드
+    public Vector3Int CalculateCoordsToPosition(Vector2Int coords)
+    {
+        return new Vector3Int(coords.x, 0, coords.y);
+    }
+    //Vector3 또는 Vector3Int 좌표를 Vector2Int 좌표로 바꾸는 코드
+    public Vector2Int CalculatePositionToCoords(Vector3 coords)
+    {
+        return new Vector2Int((int)coords.x, (int)coords.z);
+    }
 }

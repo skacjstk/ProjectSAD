@@ -59,9 +59,5 @@ public class King : Piece
     {
         return directions;
     }
-    public void CastlingCheck()
-    {
-        //QueenSide   -x
-        //KingSide   +x
-    }
+ 
 }

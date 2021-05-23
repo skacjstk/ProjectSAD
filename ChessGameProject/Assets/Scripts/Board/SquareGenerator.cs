@@ -38,7 +38,6 @@ public class SquareGenerator : MonoBehaviour
                 SquareCreate(calDirection, -tempDirections[0], tempPiece);
                 if (!tempPiece.hasMoved)
                 {
-                    Debug.LogWarning("firstMove: " + tempPiece.hasMoved);
                     Vector2Int tempDirection = new Vector2Int(-tempDirections[0].x, -(tempDirections[0].y + 1));
                     SquareCreate(calDirection, tempDirection, tempPiece); 
                 }
@@ -48,7 +47,6 @@ public class SquareGenerator : MonoBehaviour
                 SquareCreate(calDirection, tempDirections[0], tempPiece);
                 if (!tempPiece.hasMoved)
                 {
-                    Debug.LogWarning("firstMove: " + tempPiece.hasMoved);
                     Vector2Int tempDirection = new Vector2Int (tempDirections[0].x, tempDirections[0].y + 1);
                     SquareCreate(calDirection, tempDirection, tempPiece);
                 }
@@ -67,15 +65,13 @@ public class SquareGenerator : MonoBehaviour
         else if (pType.Equals(PieceType.King))
         {
             //임시 
-            tempPiece.GetComponent<King>().CastlingCheck();
+            theBoard.CheckCastling(tempPiece);   //기존과 개별로 사각형 생성
+            
             //킹의 경우 개별적인 행동 별 Check 검사가 필요함 
             tempDirections = tempPiece.GetDirections();
             Debug.Log("tempVector 길이" + tempDirections.Count + "위치: " + tempPiece.transform.position);
 
-            foreach (Vector2Int tempDirection in tempDirections)
-            {
-                SquareCreate(calDirection, tempDirection, tempPiece);
-            }
+     
 
         }
         //나이트는 이동 지점이 선이 아니라 포인트임 
@@ -130,8 +126,15 @@ public class SquareGenerator : MonoBehaviour
             default:
                 Debug.Log("아무 값이 없음");
                 break;
-        }
-        
+        }        
+    }
+    /// <summary>
+    /// 캐슬링 전용 사각형 함수 2차원 좌표를 받아서 바로 만들어준다.
+    /// </summary>
+    /// <param name="coords">캐슬링 좌표 (y[z],x)</param>
+    public void SquareCreate(Vector3Int coords)
+    {
+        SquareList.Add(Instantiate(squarePrefab, coords, Quaternion.identity));
     }
     private void SquareLineCreate(Vector3Int calDirection, Vector2Int tempDirection, Piece tempPiece)
     {
