@@ -63,6 +63,48 @@ public class Board : MonoBehaviour
     {
         return new Vector2Int((int)coords.x, (int)coords.z);
     }
+    /// <summary>
+    /// enpassent 가능 여부를 따진다. 이를 위해선 ChessGameController 에 있는 currentGameTurn 변수가 필요하다. 
+    /// </summary>
+    /// <param name="calDirection">사각형이 생성될 대상 좌표(directions 에서 받아옴)</param>
+    /// <param name="tempPiece">사각형을 생성해 이동할 Piece 자신</param>
+    /// <returns></returns>
+    public bool CanEnpassent(Vector3Int calDirection, Piece tempPiece)
+    {
+        /*
+         * 흰색일 경우, z값이 + 되는 쪽이 앞 
+         * 검은 색일 경우, z값이 - 되는 쪽이 앞
+         */
+        if (tempPiece.team == TeamColor.White)
+        {
+            calDirection = new Vector3Int(calDirection.x, calDirection.y, calDirection.z - 1);   //자신 바로옆 을 계산하는 셈 
+
+        }
+        else    //검은색일 경우, kill좌표가 그거니까 음...
+        {
+            calDirection = new Vector3Int(calDirection.x, calDirection.y, calDirection.z + 1);   //자신 바로옆 을 계산하는 셈 
+        }
+        //일단 거기에 어떤 적 기물이 있다는 뜻
+        if(grid[calDirection.z, calDirection.x] != null && !TeamCheck(calDirection, tempPiece))
+        {
+            //거기에 있는 기물이 Pawn 일 때
+           if(grid[calDirection.z, calDirection.x].GetPieceType() == PieceType.Pawn)
+            {
+                //현재 게임 턴과 그 기물의 양파상턴이 일치할 때,
+                if (grid[calDirection.z, calDirection.x].GetComponent<Pawn>().enpassentTurn == theChessGameController.currentGameTurn)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public bool TeamCheck(Vector3Int calDirection, Piece tempPiece)
+    {
+        if (grid[calDirection.z, calDirection.x].team == tempPiece.team)
+            return true;
+        else
+            return false;
+    }
     public int GetBoardSize()
     {
         return boardSize;
