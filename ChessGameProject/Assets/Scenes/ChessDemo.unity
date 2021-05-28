@@ -454,6 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e6c62dac66716d4c9268c971e918c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentGameTurn: 0
 --- !u!4 &468907905
 Transform:
   m_ObjectHideFlags: 0

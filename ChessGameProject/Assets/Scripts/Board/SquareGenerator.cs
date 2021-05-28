@@ -59,8 +59,8 @@ public class SquareGenerator : MonoBehaviour
                 else
                     SquareCreate(calDirection, tempDirections[i], tempPiece);
             }
-            //end ifpawn
-        }
+
+        }//end ifpawn
         //킹 역시 킬좌표에 체크검사를 해야 함
         else if (pType.Equals(PieceType.King))
         {
@@ -69,10 +69,7 @@ public class SquareGenerator : MonoBehaviour
             
             //킹의 경우 개별적인 행동 별 Check 검사가 필요함 
             tempDirections = tempPiece.GetDirections();
-            Debug.Log("tempVector 길이" + tempDirections.Count + "위치: " + tempPiece.transform.position);
-
-     
-
+            Debug.Log("tempVector 길이" + tempDirections.Count + "위치: " + tempPiece.transform.position);   
         }
         //나이트는 이동 지점이 선이 아니라 포인트임 
         else if (pType.Equals(PieceType.Knight))
@@ -216,11 +213,11 @@ public class SquareGenerator : MonoBehaviour
          *  1. 아무것도 없다.
          *  2. 아군 기물이 있다.
          *  3. 적군 기물이 있다.
-         *  4. 양파상 이동 가능
+         *  4. 양파상 이동 가능 -> 딱히 구분할 필요는 없는데 어쩌다보니 이렇게 되었음
          *
          *  2-1. Pawn 의 경우 배열이 3개이며, 각 배열엔 기본이동, 좌우 킬좌표  도합 3개의 directions 가 있다. 
          */
-        //폰 전용 검사, 양파상(미구현)
+        //폰 전용 검사, 양파상
         else if (tempPiece.GetPieceType() == PieceType.Pawn)
         {
             //이동 좌표이면서, 대상 위치에 뭔가 없을 때
