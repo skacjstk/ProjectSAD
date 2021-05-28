@@ -86,7 +86,6 @@ public class ChessGameController : MonoBehaviour
             theBoard.grid[tempAfterPos.y, tempAfterPos.x] = theBoard.grid[tempBeforePos.y, tempBeforePos.x];
             theBoard.grid[tempBeforePos.y, tempBeforePos.x] = null; //이전 위치에 내가 있었다.
         }
-
         else  //평범한 이동일 경우
         {
             theBoard.grid[tempBeforePos.y, tempBeforePos.x].hasMoved = true;
