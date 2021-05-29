@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class ChessGameController : MonoBehaviour
 {
-
     private Board theBoard;
     private PiecesGenerator thePieceGenerator;
     void Awake()
@@ -72,6 +73,7 @@ public class ChessGameController : MonoBehaviour
             theBoard.grid[tempBeforePos.y, tempBeforePos.x] = null;
         }
     } //end function
+
     public void ChangePawnMove()
     {
         if (GetSelectedPiece().GetPieceType() == PieceType.Pawn)

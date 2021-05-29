@@ -17,6 +17,9 @@ public class LoginManager : MonoBehaviour
     string id, pass;
     public SheetData SD;
 
+    public GameObject LoginPanel;
+    public GameObject MenuPanel;
+
     bool SetIDPass()
     {
         id = IDInput.text.Trim();
@@ -93,7 +96,8 @@ public class LoginManager : MonoBehaviour
         {
             if (SD.value == "success")
             {
-                SceneManager.LoadScene("ChessDemo");
+                LoginPanel.SetActive(false);
+                MenuPanel.SetActive(true);
             }
         }
 

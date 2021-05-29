@@ -19,7 +19,7 @@ public class ColliderHandler : MonoBehaviour
     {
         theSquareGenerator = FindObjectOfType<SquareGenerator>();
         theChessGameController = FindObjectOfType<ChessGameController>();
-    }    
+    }
 
     public void SelectPiece()
     {
@@ -47,7 +47,6 @@ public class ColliderHandler : MonoBehaviour
          theSquareGenerator.SquareClear();  
         }//endif
     }//end function
-   
 
 
     private void MousePosRaycast()
