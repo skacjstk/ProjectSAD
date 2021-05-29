@@ -50,10 +50,21 @@ public class Board : MonoBehaviour
         Debug.Log("Piece:"+grid[(int)coords.z, (int)coords.x].GetPieceType()+"\tcoords: "+coords);    
     }
 
-    public bool CheckGrid(Vector3Int coords)
+    public bool CheckGrid(Vector3Int calDirection, Piece tempPiece)
     {
-        //임시
-        return Random.value > 0.5f; //Random.value 는 0.0~ 1.0 을 랜덤으로 반환
+        if (grid[calDirection.z, calDirection.x] != null && !TeamCheck(calDirection, tempPiece))
+            return true;
+        else if (grid[calDirection.z, calDirection.x] != null && TeamCheck(calDirection, tempPiece))
+            return true;
+        else
+            return false;
+    }
+    public bool KingCheck(Vector3Int calDirection)
+    {
+        if (grid[calDirection.z, calDirection.x] != null && grid[calDirection.z, calDirection.x].GetPieceType() == PieceType.King)
+            return true;
+        else
+            return false;
     }
 
     //{get; set;}

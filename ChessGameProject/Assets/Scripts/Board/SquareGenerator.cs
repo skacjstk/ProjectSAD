@@ -69,7 +69,12 @@ public class SquareGenerator : MonoBehaviour
             
             //킹의 경우 개별적인 행동 별 Check 검사가 필요함 
             tempDirections = tempPiece.GetDirections();
-            Debug.Log("tempVector 길이" + tempDirections.Count + "위치: " + tempPiece.transform.position);   
+            Debug.Log("tempVector 길이" + tempDirections.Count + "위치: " + tempPiece.transform.position);
+            
+            foreach (Vector2Int tempDirection in tempDirections)
+            {
+                SquareCreate(calDirection, tempDirection, tempPiece);
+            }
         }
         //나이트는 이동 지점이 선이 아니라 포인트임 
         else if (pType.Equals(PieceType.Knight))
@@ -109,6 +114,8 @@ public class SquareGenerator : MonoBehaviour
                 //유효하지 않음
                 break;
             case 1:
+                SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
+                break;
             case 3:
                 //유효함, 대상 위치에 아무것도 없거나 적 기물이 있음
                 SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
@@ -193,6 +200,8 @@ public class SquareGenerator : MonoBehaviour
                     break;
                 case 4:
                     //킹일 경우인데, check 검사를 어찌 해야 할지 몰라 더미코드
+                    SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
+                    Debug.Log("킹이 경로에 있습니다.");
                     break;
                 default:
                     Debug.Log("아무 값이 없음");
@@ -238,11 +247,11 @@ public class SquareGenerator : MonoBehaviour
         }
         //킹 전용 체크검사 
         else if(tempPiece.GetPieceType() == PieceType.King)
-        {   //임시함수, 50% 확률로 true 반환 
-            if (theBoard.CheckGrid(calDirection))
-                return 1;
+        {
+            if (theBoard.CheckGrid(calDirection, tempPiece))
+                return 0;
             else
-                return 0;            
+                return 1;
         }
         //나머지들의 검사 (이동과 Kill의 위치가 같으며, Check 검사도 필요 없는 Piece 들)
         else
@@ -251,6 +260,8 @@ public class SquareGenerator : MonoBehaviour
                 return 1;            
             else if (theBoard.TeamCheck(calDirection,tempPiece))
                 return 2;
+            else if (!theBoard.TeamCheck(calDirection, tempPiece) && theBoard.KingCheck(calDirection))  //체크인 경우    
+                return 4;
             else if(!theBoard.TeamCheck(calDirection, tempPiece))  //어떤 다른 경우가 있을까봐      
                 return 3;
             
