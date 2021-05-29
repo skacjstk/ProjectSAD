@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:ChessGameProject/Assets/Scripts/Board/Board.cs.meta
+guid: 76e278210f6c2f74ba25969f63697d6b
+=======
 guid: 87776a9b1f405644abcc38ecd70c37fb
+>>>>>>> Myungjun:ChessGameProject/Assets/Photon/PhotonChat/Code/ChatAppSettings.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
