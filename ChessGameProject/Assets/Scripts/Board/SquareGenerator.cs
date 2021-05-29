@@ -36,8 +36,9 @@ public class SquareGenerator : MonoBehaviour
             if (tempPiece.team.Equals(TeamColor.Black))
             {
                 SquareCreate(calDirection, -tempDirections[0], tempPiece);
-                if (!tempPiece.hasMoved)
+                if (tempPiece.GetComponent<Pawn>().firstMove)
                 {
+                    Debug.LogWarning("firstMove: " + tempPiece.GetComponent<Pawn>().firstMove);
                     Vector2Int tempDirection = new Vector2Int(-tempDirections[0].x, -(tempDirections[0].y + 1));
                     SquareCreate(calDirection, tempDirection, tempPiece); 
                 }
@@ -45,8 +46,9 @@ public class SquareGenerator : MonoBehaviour
             else
             {
                 SquareCreate(calDirection, tempDirections[0], tempPiece);
-                if (!tempPiece.hasMoved)
+                if (tempPiece.GetComponent<Pawn>().firstMove)
                 {
+                    Debug.LogWarning("firstMove: " + tempPiece.GetComponent<Pawn>().firstMove);
                     Vector2Int tempDirection = new Vector2Int (tempDirections[0].x, tempDirections[0].y + 1);
                     SquareCreate(calDirection, tempDirection, tempPiece);
                 }
@@ -65,8 +67,6 @@ public class SquareGenerator : MonoBehaviour
         else if (pType.Equals(PieceType.King))
         {
             //임시 
-            theBoard.CheckCastling(tempPiece);   //기존과 개별로 사각형 생성
-            
             //킹의 경우 개별적인 행동 별 Check 검사가 필요함 
             tempDirections = tempPiece.GetDirections();
             Debug.Log("tempVector 길이" + tempDirections.Count + "위치: " + tempPiece.transform.position);
@@ -75,6 +75,7 @@ public class SquareGenerator : MonoBehaviour
             {
                 SquareCreate(calDirection, tempDirection, tempPiece);
             }
+
         }
         //나이트는 이동 지점이 선이 아니라 포인트임 
         else if (pType.Equals(PieceType.Knight))
@@ -114,8 +115,6 @@ public class SquareGenerator : MonoBehaviour
                 //유효하지 않음
                 break;
             case 1:
-                SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
-                break;
             case 3:
                 //유효함, 대상 위치에 아무것도 없거나 적 기물이 있음
                 SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
@@ -124,21 +123,12 @@ public class SquareGenerator : MonoBehaviour
                 //유효하지 않음. 대상 위치에 아군 기물이 있음
                 break;
             case 4:
-                //양파상 움직임일 경우,
-                SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
+                //킹일 경우인데, check 검사를 어찌 해야 할지 몰라 더미코드
                 break;
             default:
                 Debug.Log("아무 값이 없음");
                 break;
-        }        
-    }
-    /// <summary>
-    /// 캐슬링 전용 사각형 함수 2차원 좌표를 받아서 바로 만들어준다.
-    /// </summary>
-    /// <param name="coords">캐슬링 좌표 (y[z],x)</param>
-    public void SquareCreate(Vector3Int coords)
-    {
-        SquareList.Add(Instantiate(squarePrefab, coords, Quaternion.identity));
+        }
     }
     private void SquareLineCreate(Vector3Int calDirection, Vector2Int tempDirection, Piece tempPiece)
     {
@@ -200,8 +190,6 @@ public class SquareGenerator : MonoBehaviour
                     break;
                 case 4:
                     //킹일 경우인데, check 검사를 어찌 해야 할지 몰라 더미코드
-                    SquareList.Add(Instantiate(squarePrefab, calDirection, Quaternion.identity));
-                    Debug.Log("킹이 경로에 있습니다.");
                     break;
                 default:
                     Debug.Log("아무 값이 없음");
@@ -222,7 +210,7 @@ public class SquareGenerator : MonoBehaviour
          *  1. 아무것도 없다.
          *  2. 아군 기물이 있다.
          *  3. 적군 기물이 있다.
-         *  4. 양파상 이동 가능
+         *  4. 번외: 적 킹이 있다. 
          *
          *  2-1. Pawn 의 경우 배열이 3개이며, 각 배열엔 기본이동, 좌우 킬좌표  도합 3개의 directions 가 있다. 
          */
@@ -233,42 +221,42 @@ public class SquareGenerator : MonoBehaviour
             if ((int)tempPiece.transform.position.x == calDirection.x && theBoard.grid[calDirection.z, calDirection.x] == null)
                 return 1;
             //이동 좌표가 아니면서, 대상 위치에 뭔가 있을 때, 다른 팀이라면
-            else if ((int)tempPiece.transform.position.x != calDirection.x && theBoard.grid[calDirection.z, calDirection.x] != null && !theBoard.TeamCheck(calDirection, tempPiece))
+            else if ((int)tempPiece.transform.position.x != calDirection.x && theBoard.grid[calDirection.z, calDirection.x] != null && !TeamCheck(calDirection, tempPiece))
             {
                 return 3;
-            }
-            //이동 좌표가 아니면서, Enpassent 일 경우 
-            else if ((int)tempPiece.transform.position.x != calDirection.x  && theBoard.CanEnpassent(calDirection, tempPiece))  //양파상(enpassent) 일 경우
-            {
-                return 4;   
             }
             else
                 return 0;
         }
         //킹 전용 체크검사 
         else if(tempPiece.GetPieceType() == PieceType.King)
-        {   
-            if (theBoard.CheckGrid(calDirection, tempPiece))
-                return 0;
+        {   //임시함수, 50% 확률로 true 반환 
+            if (theBoard.CheckGrid(calDirection))
+                return 1;
             else
-                return 1;            
+                return 0;            
         }
         //나머지들의 검사 (이동과 Kill의 위치가 같으며, Check 검사도 필요 없는 Piece 들)
         else
         {
             if (theBoard.grid[calDirection.z, calDirection.x] == null)
                 return 1;            
-            else if (theBoard.TeamCheck(calDirection,tempPiece))
+            else if (TeamCheck(calDirection,tempPiece))
                 return 2;
-            else if (!theBoard.TeamCheck(calDirection, tempPiece) && theBoard.KingCheck(calDirection))  //체크인 경우    
-                return 4;
-            else if(!theBoard.TeamCheck(calDirection, tempPiece))  //어떤 다른 경우가 있을까봐      
+            else if(!TeamCheck(calDirection, tempPiece))  //어떤 다른 경우가 있을까봐      
                 return 3;
             
         }
         return 4;   //현재는 킹일 때, 이지만 없음 
     }//endfunction
 
+    private bool TeamCheck(Vector3Int calDirection, Piece tempPiece)
+    {
+        if (theBoard.grid[calDirection.z, calDirection.x].team == tempPiece.team)
+            return true;
+        else
+            return false;
+    }
     
 
     //그래픽적인 사각형 모두 삭제

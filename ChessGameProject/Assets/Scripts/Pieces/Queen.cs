@@ -31,22 +31,16 @@ public class Queen : Piece
         return pieceType;
     }
 
+    //움직일 수 있는 곳을 반환하는 함수 
     public override bool CanMove(Vector2Int coords)
     {
         throw new System.NotImplementedException();
     }
 
-    public override bool MovePiece()
+    //실제로 Piece를 움직이게 하는 함수 
+    public override void MovePiece(Vector2Int coords)
     {
-        if (!hasMoved)
-        {
-            hasMoved = true;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        throw new System.NotImplementedException();
     }
 
     public override List<Vector2Int> GetDirections()

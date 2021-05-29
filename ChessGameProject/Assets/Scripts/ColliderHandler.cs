@@ -19,7 +19,7 @@ public class ColliderHandler : MonoBehaviour
     {
         theSquareGenerator = FindObjectOfType<SquareGenerator>();
         theChessGameController = FindObjectOfType<ChessGameController>();
-    }    
+    }
 
     public void SelectPiece()
     {
@@ -41,14 +41,12 @@ public class ColliderHandler : MonoBehaviour
             theChessGameController.PiecePosMove(tempPiece.transform.position, SquareHit.transform.position);
             //그래픽적인 위치 이동 
             tempPiece.transform.position = SquareHit.transform.position;           
-            theSquareGenerator.SquareClear();
-            theChessGameController.EndTurn();   //한 턴이 끝날 때 호출
+            theSquareGenerator.SquareClear();  
         }
         else {  //사각형, 기물 둘다 아닐 때, Nothing raycast 일 때 
          theSquareGenerator.SquareClear();  
         }//endif
     }//end function
-   
 
 
     private void MousePosRaycast()

@@ -20,11 +20,6 @@ public class King : Piece
         new Vector2Int(-1, -1),
     };
 
-    readonly List<Vector2Int> castlingDirections = new List<Vector2Int>()
-    {
-        new Vector2Int(0, 2),
-        new Vector2Int(0, -2)
-    };
 
 
     public override void SelectedPiece()
@@ -42,22 +37,14 @@ public class King : Piece
         throw new System.NotImplementedException();
     }
 
-    public override bool MovePiece( )
+    //실제로 Piece를 움직이게 하는 함수 
+    public override void MovePiece(Vector2Int coords)
     {
-        if (!hasMoved)
-        {
-            hasMoved = true;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        throw new System.NotImplementedException();
     }
 
     public override List<Vector2Int> GetDirections()
     {
         return directions;
     }
- 
 }

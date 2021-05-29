@@ -36,17 +36,10 @@ public class Bishop : Piece
         throw new System.NotImplementedException();
     }
 
-    public override bool MovePiece()
+    //실제로 Piece를 움직이게 하는 함수 
+    public override void MovePiece(Vector2Int coords)
     {
-        if (!hasMoved)
-        {
-            hasMoved = true;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        throw new System.NotImplementedException();
     }
 
     public override List<Vector2Int> GetDirections()
