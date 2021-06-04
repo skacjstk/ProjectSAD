@@ -25,6 +25,4 @@ public abstract class Piece : MonoBehaviour
 
     public abstract List<Vector2Int> GetDirections();
 
-
-
 }

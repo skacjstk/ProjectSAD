@@ -22,6 +22,7 @@ public class Board : MonoBehaviour
     [SerializeField] private ChessGameController theChessGameController;
     private SquareGenerator theSquareGenerator;
     private Piece selectedPiece;
+    private PiecesGenerator thePieceGenerator;
 
 
 
@@ -31,6 +32,8 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         theSquareGenerator = FindObjectOfType<SquareGenerator>();
+        thePieceGenerator = FindObjectOfType<PiecesGenerator>();
+        theChessGameController = FindObjectOfType<ChessGameController>();
     }
 
     private void Start()
@@ -56,15 +59,117 @@ public class Board : MonoBehaviour
             return true;
         else if (grid[calDirection.z, calDirection.x] != null && TeamCheck(calDirection, tempPiece))
             return true;
+        //else if (CanCome(calDirection, tempPiece))
+        //    return true;
         else
             return false;
     }
-    public bool KingCheck(Vector3Int calDirection)
+    public bool KingCheck(Vector3Int calDirection, Piece tempPiece)
     {
-        if (grid[calDirection.z, calDirection.x] != null && grid[calDirection.z, calDirection.x].GetPieceType() == PieceType.King)
+        if (grid[calDirection.z, calDirection.x] != null && grid[calDirection.z, calDirection.x].GetPieceType() == PieceType.King && tempPiece.team != grid[calDirection.z, calDirection.x].team)
             return true;
         else
             return false;
+    }
+    //public bool CanCome(Vector3Int calDirection, Piece tempPiece)
+    //{
+    //    Piece enemyPiece;
+    //    List<Vector3Int> tempDirections;
+    //    Vector3Int checkDirection;
+    //    tempDirections = tempPiece.GetComponent<King>().GetcheckDirections();
+    //    if (grid[calDirection.z, calDirection.x] == null)
+    //    {
+    //        //킹이 만약 여기로 갔다면
+    //        //다른 애들 중에 킹체크가 트루인가 확인하는 법
+    //        checkDirection = new Vector3Int(calDirection.x, 0, calDirection.z);
+    //        foreach (Vector3Int tempDirection in tempDirections)
+    //        {
+    //            for (int i = 0; i < GetBoardSize(); ++i)
+    //            {
+    //                //직선 (앞)
+    //                if (tempDirection.x == 0)
+    //                {
+    //                    if (tempDirection.z < 0)
+    //                        checkDirection += new Vector3Int(0, 0, 1);
+    //                    else
+    //                        checkDirection += new Vector3Int(0, 0, -1);
+    //                    //endif
+    //                }
+    //                //직선 (옆)
+    //                else if (tempDirection.z == 0)
+    //                {
+    //                    if (tempDirection.x < 0)
+    //                        checkDirection += new Vector3Int(1, 0, 0);
+    //                    else
+    //                        checkDirection += new Vector3Int(-1, 0, 0);
+    //                    //endif
+    //                }
+    //                //대각선
+    //                else
+    //                {
+    //                    if (tempDirection.x < 0 && tempDirection.z < 0)
+    //                        checkDirection += new Vector3Int(1, 0, 1);
+    //                    else if (tempDirection.x > 0 && tempDirection.z < 0)
+    //                        checkDirection += new Vector3Int(-1, 0, 1);
+    //                    else if (tempDirection.x < 0 && tempDirection.z > 0)
+    //                        checkDirection += new Vector3Int(1, 0, -1);
+    //                    else if (tempDirection.x > 0 && tempDirection.z > 0)
+    //                        checkDirection += new Vector3Int(-1, 0, -1);
+    //                }//end if
+    //                if (checkDirection.x < 0 || checkDirection.x > 7 || checkDirection.z < 0 || checkDirection.z > 7)
+    //                    continue;
+    //                if (grid[checkDirection.z, checkDirection.x] != null)
+    //                {
+    //                    enemyPiece = grid[checkDirection.z, checkDirection.x].GetComponent<Piece>();
+    //                    if (enemyPiece.GetPieceType() != PieceType.Pawn && enemyPiece.GetPieceType() != PieceType.King)
+    //                    {
+    //                        if (!TeamCheck(checkDirection, enemyPiece))
+    //                        {
+    //                            return true;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        return true;
+    //    }
+    //    else
+    //        return false;
+    //}
+
+    public void Promotion(Vector2Int calDirection)
+    {
+        GameObject newPiece;
+        PieceType pieceType = PieceType.Queen;
+        TeamColor col;
+        if (calDirection.y == 0) // 검은 폰 승진
+        {
+            col = TeamColor.Black;
+            //그래픽적인 파괴
+            Destroy(grid[calDirection.y, calDirection.x].gameObject);
+            //시스템적인 파괴
+            grid[calDirection.y, calDirection.x].hasMoved = true;
+            grid[calDirection.y, calDirection.x] = null;
+            newPiece = thePieceGenerator.CreatePiece(pieceType);
+            thePieceGenerator.SetMaterial(pieceType, col, ref newPiece);
+            newPiece.transform.position = CalculateCoordsToPosition(calDirection);
+            //gird[y][x] 에  객체의 Piece 보내기 
+            theChessGameController.InitializeGrid(newPiece.transform.position, newPiece);
+        }
+        else if(calDirection.y == 7) // 흰 폰 승진
+        {
+            col = TeamColor.White;
+            //그래픽적인 파괴
+            Destroy(grid[calDirection.y, calDirection.x].gameObject);
+            //시스템적인 파괴
+            grid[calDirection.y, calDirection.x] = null;
+            newPiece = thePieceGenerator.CreatePiece(pieceType);
+            thePieceGenerator.SetMaterial(pieceType, col, ref newPiece);
+            newPiece.transform.position = CalculateCoordsToPosition(calDirection);
+            //gird[y][x] 에  객체의 Piece 보내기 
+            theChessGameController.InitializeGrid(newPiece.transform.position, newPiece);
+
+        }
     }
 
     //{get; set;}

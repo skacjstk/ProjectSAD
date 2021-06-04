@@ -212,7 +212,7 @@ public class SquareGenerator : MonoBehaviour
         }//endfor
     }//end function 
 
-    private int CheckValidSquare(Vector3Int calDirection, Piece tempPiece)
+    public int CheckValidSquare(Vector3Int calDirection, Piece tempPiece)
     {
         if (calDirection.x < 0 || calDirection.x > 7 || calDirection.z < 0 || calDirection.z > 7)
             return 0;
@@ -260,7 +260,7 @@ public class SquareGenerator : MonoBehaviour
                 return 1;            
             else if (theBoard.TeamCheck(calDirection,tempPiece))
                 return 2;
-            else if (!theBoard.TeamCheck(calDirection, tempPiece) && theBoard.KingCheck(calDirection))  //체크인 경우    
+            else if (theBoard.KingCheck(calDirection, tempPiece))  //체크인 경우    
                 return 4;
             else if(!theBoard.TeamCheck(calDirection, tempPiece))  //어떤 다른 경우가 있을까봐      
                 return 3;
