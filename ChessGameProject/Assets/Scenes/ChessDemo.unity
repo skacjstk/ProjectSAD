@@ -1015,7 +1015,7 @@ MonoBehaviour:
   layerMaskSquare:
     serializedVersion: 2
     m_Bits: 512
-  playerCamera: {fileID: 1983053881}
+  playerCamera: {fileID: 1490176222}
 --- !u!1 &759769332
 GameObject:
   m_ObjectHideFlags: 0
@@ -1048,7 +1048,7 @@ MonoBehaviour:
   usertext:
   - {fileID: 93699991}
   - {fileID: 1200180694}
-  BlackCamera: {fileID: 1983053881}
+  UserCamera: {fileID: 1490176222}
 --- !u!4 &759769334
 Transform:
   m_ObjectHideFlags: 0
@@ -2348,7 +2348,7 @@ GameObject:
   - component: {fileID: 1490176222}
   - component: {fileID: 1490176221}
   m_Layer: 0
-  m_Name: WhiteCamera
+  m_Name: MainCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2987,7 +2987,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1983053879
 Transform:
   m_ObjectHideFlags: 0
