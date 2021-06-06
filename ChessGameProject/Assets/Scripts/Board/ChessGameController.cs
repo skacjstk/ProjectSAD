@@ -116,6 +116,10 @@ public class ChessGameController : MonoBehaviour
                 //캐슬링 용 그래픽적 이동
                 theBoard.grid[tempAfterPos.y, tempAfterPos.x].transform.position = new Vector3(tempAfterPos.x, 0f, tempAfterPos.y);
             }
+            if(GetSelectedPiece().GetPieceType() == PieceType.Pawn)
+            {
+                theBoard.Promotion(tempAfterPos);
+            }
         }//
     } //end function
 

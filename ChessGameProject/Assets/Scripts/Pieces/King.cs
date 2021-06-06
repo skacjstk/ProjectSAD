@@ -26,6 +26,17 @@ public class King : Piece
         new Vector2Int(0, -2)
     };
 
+    readonly List<Vector3Int> checkdirections = new List<Vector3Int>() {
+        new Vector3Int(0, 0, 8),
+        new Vector3Int(8, 0, 0),
+        new Vector3Int(0, 0, -8),
+        new Vector3Int(-8, 0, 0),
+        //대각선 4방 
+        new Vector3Int(8, 0, 8),
+        new Vector3Int(8, 0, -8),
+        new Vector3Int(-8, 0, 8),
+        new Vector3Int(-8, 0, -8),
+    };
 
     public override void SelectedPiece()
     {
@@ -59,5 +70,10 @@ public class King : Piece
     {
         return directions;
     }
- 
+
+    public List<Vector3Int> GetcheckDirections()
+    {
+        return checkdirections;
+    }
+
 }
