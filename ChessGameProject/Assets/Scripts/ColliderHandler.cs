@@ -6,12 +6,12 @@ public class ColliderHandler : MonoBehaviour
 {
     RaycastHit hit, tempHit;
     RaycastHit SquareHit;
-    bool hitScanPiece;
+    bool hitScanPiece, hitScanSquare;
     //레이어마스크: 플레이어 설정 필수 
     public LayerMask layerMaskPiece;
     public LayerMask layerMaskSquare;
     public Camera playerCamera;
-    protected SquareGenerator theSquareGenerator;
+    private SquareGenerator theSquareGenerator;
     private ChessGameController theChessGameController;
     Piece tempPiece;
 
@@ -20,7 +20,6 @@ public class ColliderHandler : MonoBehaviour
         theSquareGenerator = FindObjectOfType<SquareGenerator>();
         theChessGameController = FindObjectOfType<ChessGameController>();
     }
-    
 
     public void SelectPiece()
     {
@@ -29,54 +28,54 @@ public class ColliderHandler : MonoBehaviour
         if (hitScanPiece) { 
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Piece"))    // Piece 의 레이어마스크 값 
             {
-                Debug.Log("Piece 초기화 진입");
-                tempPiece = hit.transform.GetComponent<Piece>();
-                theChessGameController.SetSelectedPiece(tempPiece);
-                PieceType p1 = tempPiece.GetPieceType();
+                Debug.Log("Piece 할당 및 선택한Piece 갱신");
+                tempPiece = hit.transform.GetComponent<Piece>(); //직전에 선택한 Piece의 컴포넌트 할당 
+                theChessGameController.SetSelectedPiece(tempPiece);       //다른 스크립트에서 직전 선택 Piece 가져올 때 사용해야 한다.
                 theSquareGenerator.GenerateSquare(tempPiece);
-            }
+            }//endif
         }
-        else if (SquareHit.transform.gameObject.layer == LayerMask.NameToLayer("Square"))
+        else if (hitScanSquare && SquareHit.transform.gameObject.layer == LayerMask.NameToLayer("Square"))
         {
-
-            //오류 이유: hit가 사라져서 
             Debug.Log("사각형 위치: " + SquareHit.transform.position);
             //보드에 위치 정보 갱신
             theChessGameController.PiecePosMove(tempPiece.transform.position, SquareHit.transform.position);
             //그래픽적인 위치 이동 
-            tempPiece.transform.position = SquareHit.transform.position;
-
-            theSquareGenerator.SquareClear();  
+            tempPiece.transform.position = SquareHit.transform.position;           
+            theSquareGenerator.SquareClear();
+            theChessGameController.EndTurn();   //한 턴이 끝날 때 호출
         }
-
-        
+        else {  //사각형, 기물 둘다 아닐 때, Nothing raycast 일 때 
+         theSquareGenerator.SquareClear();  
+        }//endif
     }//end function
-   
 
 
     private void MousePosRaycast()
     {
-        //     hit = null;
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
 
         //여기서 검출되면 hitScanPiece 가 true 됨 
         if (hitScanPiece = Physics.Raycast(ray, out hit, 100, layerMaskPiece))
         {
             //상황: 기물 밑에 사각형이 있을 때
-            if(Physics.Raycast(ray, out SquareHit, 100, layerMaskSquare))
+            if (hitScanSquare = Physics.Raycast(ray, out SquareHit, 100, layerMaskSquare))
             {
                 Debug.Log("기물 밑 사각형 클릭");
                 hitScanPiece = false;
             }
-            else
-                Debug.Log("기물 클릭");
+            else //endif
+            { Debug.Log("기물 클릭");
+                hitScanSquare = false;
+            }
         }
-        else if (Physics.Raycast(ray, out SquareHit, 100, layerMaskSquare))
+        else if (hitScanSquare = Physics.Raycast(ray, out SquareHit, 100, layerMaskSquare))
         {
             Debug.Log("순수 사각형 클릭");
         }
         else
         {
+            hitScanSquare = false;
+            hitScanPiece = false;
             Debug.Log("Nothing Raycast");
             
         }//endif
